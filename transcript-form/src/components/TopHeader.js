@@ -2,19 +2,11 @@ import React from "react";
 import runLogo from "../images/runlogo.jpg";
 
 const TopHeader = () => (
-  <header className="header">
-    <span className="logo">
-      {/* <Link href="/"> */}
-      <a href="/" className="no-underline">
-        <img
-          src={runLogo}
-          alt="runLogo"
-          style={{ height: "3.95rem" }}
-          className="logo-pics"
-        />
-      </a>
-      {/* </Link> */}
-    </span>
+  <header>
+    <img className="logo" src={runLogo} alt="run" />
+    <nav>
+      <h1 className="nav-area">TRANSCRIPT APPLICATION FORM</h1>
+    </nav>
   </header>
 );
 

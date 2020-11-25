@@ -4,23 +4,23 @@ import TopHeader from "./components/TopHeader";
 import { Field, Form, Formik } from "formik";
 import { Card, CardContent, Box, Button } from "@material-ui/core";
 import { TextField } from "formik-material-ui";
-import { string, object, date } from "yup";
+import { string, object, date, number } from "yup";
 import axios from "axios";
 import StatusModal from "./components/StatusModal";
 
 function App() {
   return (
-    <div className="main-container">
-      <div className="header-container">
-        <TopHeader />
-        <p className="application-header">TRANSCRIPT REQUEST FORM</p>
-      </div>
+    <div>
+      {/* <div className="header-container"> */}
+      <TopHeader />
+      {/* <p className="application-header">TRANSCRIPT REQUEST FORM</p> */}
+      {/* </div> */}
       <Card
         style={{
           width: "65%",
           margin: "0 auto",
-          marginTop: "20px",
-          marginBottom: "50px",
+          // marginTop: "20px",
+          marginBottom: "80px",
         }}
       >
         <CardContent>
@@ -28,16 +28,22 @@ function App() {
             validationSchema={object({
               matricNo: string().required("Matric Number is compulsory"),
               yearOfGraduation: date().required("When did you graduate?"),
-              reasonForRequest: string(),
+              reasonForRequest: string().required(
+                "Why do you need the transcript?"
+              ),
+              phoneNumber: number().required("Phone number is required"),
+              email: string().email().required("Please enter a valid email"),
             })}
             initialValues={{
               matricNo: "",
               yearOfGraduation: "",
               reasonForRequest: "",
+              phoneNumber: "",
+              email: "",
             }}
             onSubmit={async (values, tools) => {
               const res = await axios.post(
-                "https://redeemers-transcript.herokuapp.com/forms",
+                "http://localhost:5000/forms",
                 values
               );
               console.log("values", res.data);
@@ -81,6 +87,22 @@ function App() {
                   name="reasonForRequest"
                   component={TextField}
                   label="Why are you requesting for the transcript?"
+                />
+              </Box>
+              <Box paddingBottom={2}>
+                <Field
+                  fullWidth
+                  name="phoneNumber"
+                  component={TextField}
+                  label="Phone Number"
+                />
+              </Box>
+              <Box paddingBottom={2}>
+                <Field
+                  fullWidth
+                  name="email"
+                  component={TextField}
+                  label="Email"
                 />
               </Box>
               <Button
