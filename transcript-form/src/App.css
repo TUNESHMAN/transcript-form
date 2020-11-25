@@ -1,0 +1,38 @@
+@import "~antd/dist/antd.css";
+
+.main-container {
+  width: 100%;
+  padding: 50px;
+}
+.header-container {
+  display: flex;
+  margin-top: 45px;
+  /* justify-content: center; */
+  align-items: center;
+  /* border: 1px solid gray; */
+  width: 63%;
+  margin: auto;
+  /* border-radius: 8px; */
+}
+.application-header {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 25px;
+  font-weight: bold;
+  /* padding: 4px; */
+  padding-top: 20px;
+  margin-top: 18px;
+  padding-right: 30px;
+}
+.header {
+  display: flex;
+  /* justify-content: center;
+  align-items: center; */
+  padding: 0.85rem 5rem;
+  z-index: 100;
+  margin-right: 25px;
+}
+
+.logo {
+  font-weight: bold;
+  /* padding-right: 25px; */
+}
