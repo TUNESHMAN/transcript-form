@@ -1,122 +1,146 @@
 import React from "react";
 import "./App.css";
-import TopHeader from "./components/TopHeader";
-import { Field, Form, Formik } from "formik";
-import { Card, CardContent, Box, Button } from "@material-ui/core";
-import { TextField } from "formik-material-ui";
-import { string, object, date, number } from "yup";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import axios from "axios";
 import StatusModal from "./components/StatusModal";
+import logo from "./images/RunLOGO.png";
 
 function App() {
+  const initialValues = {
+    matricNo: "",
+    yearOfGraduation: "",
+    reasonForRequest: "",
+    phoneNumber: "",
+    email: "",
+  };
+  const onSubmit = (values, tools) => {
+    axios
+      .post("http://localhost:5000/forms", values)
+      .then((res) => {
+        if (res.data.message === "Form created successfully") {
+          StatusModal(
+            "Your request for transcript has been received",
+            "We will get back to you",
+            "success"
+          );
+          tools.resetForm();
+        } else {
+          StatusModal("Error submitting form", "Please,try again", "error");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const validationSchema = Yup.object().shape({
+    matricNo: Yup.string().required("Please enter matric number"),
+    yearOfGraduation: Yup.date().required("When did you graduate?"),
+    reasonForRequest: Yup.string().required("Why do you need the transcript?"),
+    phoneNumber: Yup.number().required("Phone number is required"),
+    email: Yup.string().email().required("Please enter a valid email"),
+  });
+
+  const formik = useFormik({
+    initialValues,
+    onSubmit,
+    validationSchema,
+  });
   return (
     <div>
-      {/* <div className="header-container"> */}
-      <TopHeader />
-      {/* <p className="application-header">TRANSCRIPT REQUEST FORM</p> */}
-      {/* </div> */}
-      <Card
-        style={{
-          width: "65%",
-          margin: "0 auto",
-          // marginTop: "20px",
-          marginBottom: "80px",
-        }}
-      >
-        <CardContent>
-          <Formik
-            validationSchema={object({
-              matricNo: string().required("Matric Number is compulsory"),
-              yearOfGraduation: date().required("When did you graduate?"),
-              reasonForRequest: string().required(
-                "Why do you need the transcript?"
-              ),
-              phoneNumber: number().required("Phone number is required"),
-              email: string().email().required("Please enter a valid email"),
-            })}
-            initialValues={{
-              matricNo: "",
-              yearOfGraduation: "",
-              reasonForRequest: "",
-              phoneNumber: "",
-              email: "",
-            }}
-            onSubmit={async (values, tools) => {
-              const res = await axios.post(
-                "http://localhost:5000/forms",
-                values
-              );
-              console.log("values", res.data);
-              if (res.data.message === "Form created successfully") {
-                StatusModal(
-                  "Your request for transcript has been received",
-                  "We will get back to you",
-                  "success"
-                );
-                tools.resetForm();
-              } else {
-                StatusModal(
-                  "Error submitting form",
-                  "Please,try again",
-                  "error"
-                );
-              }
-            }}
-          >
-            <Form autoComplete="off">
-              <Box paddingBottom={2}>
-                <Field
-                  fullWidth
-                  name="matricNo"
-                  component={TextField}
-                  label="Matriculation Number"
-                />
-              </Box>
-              <Box paddingBottom={2}>
-                <Field
-                  fullWidth
-                  name="yearOfGraduation"
-                  component={TextField}
-                  type="date"
-                  // label="Graduation Year"
-                />
-              </Box>
-              <Box paddingBottom={2}>
-                <Field
-                  fullWidth
-                  name="reasonForRequest"
-                  component={TextField}
-                  label="Why are you requesting for the transcript?"
-                />
-              </Box>
-              <Box paddingBottom={2}>
-                <Field
-                  fullWidth
-                  name="phoneNumber"
-                  component={TextField}
-                  label="Phone Number"
-                />
-              </Box>
-              <Box paddingBottom={2}>
-                <Field
-                  fullWidth
-                  name="email"
-                  component={TextField}
-                  label="Email"
-                />
-              </Box>
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                // onClick={onsubmit}
-              >
-                SEND
-              </Button>
-            </Form>
-          </Formik>
-        </CardContent>
-      </Card>
+      <div className="login-box">
+        <img src={logo} alt="logo" className="logo" />
+        <h2>Transcript Request Form</h2>
+        <form onSubmit={formik.handleSubmit}>
+          <div className="user-box">
+            <input
+              placeholder="Matric number"
+              type="text"
+              name="matricNo"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.matricNo}
+            />
+            {formik.touched.matricNo && formik.errors.matricNo ? (
+              <span className="error-message">{formik.errors.matricNo}</span>
+            ) : null}
+            <label htmlFor="matricNo">Matric Number</label>
+          </div>
+          <div className="user-box">
+            <input
+              placeholder="When did you Graduate?"
+              type="date"
+              name="yearOfGraduation"
+              required=""
+              id="yearOfGraduation"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.yearOfGraduation}
+            />
+            <label htmlFor="yearOfGraduation">When did you graduate?</label>
+            {formik.touched.yearOfGraduation &&
+            formik.errors.yearOfGraduation ? (
+              <span className="error-message">
+                {formik.errors.yearOfGraduation}
+              </span>
+            ) : null}
+          </div>
+
+          <div className="user-box">
+            <input
+              placeholder="Why do you need the transcript?"
+              type="text"
+              name="reasonForRequest"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.reasonForRequest}
+            />
+            <label htmlFor="reasonForRequest">Reason for request</label>
+            {formik.touched.reasonForRequest &&
+            formik.errors.reasonForRequest ? (
+              <span className="error-message">
+                {formik.errors.reasonForRequest}
+              </span>
+            ) : null}
+          </div>
+          <div className="user-box">
+            <input
+              placeholder="Phone number"
+              type="text"
+              name="phoneNumber"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.phoneNumber}
+            />
+            <label htmlFor="phoneNumber">Phone Number</label>
+            {formik.touched.phoneNumber && formik.errors.phoneNumber ? (
+              <span className="error-message">{formik.errors.phoneNumber}</span>
+            ) : null}
+          </div>
+          <div className="user-box">
+            <input
+              placeholder="Your email"
+              type="email"
+              name="email"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.email}
+            />
+            <label htmlFor="email">Email</label>
+            {formik.touched.email && formik.errors.email ? (
+              <span className="error-message">{formik.errors.email}</span>
+            ) : null}
+          </div>
+          <button type="submit" onClick={formik.handleSubmit}>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            Submit
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
