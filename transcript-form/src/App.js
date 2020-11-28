@@ -50,7 +50,11 @@ function App() {
   return (
     <div>
       <div className="login-box">
-        <img src={logo} alt="logo" className="logo" />
+        <img
+          src={logo}
+          alt="logo"
+          style={{ marginLeft: "120px", height: "80px", marginTop:"20px" }}
+        />
         <h2>Transcript Request Form</h2>
         <form onSubmit={formik.handleSubmit}>
           <div className="user-box">
