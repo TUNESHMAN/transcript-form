@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import StatusModal from "./components/StatusModal";
-import logo from "./images/RunLOGO.png";
+// import logo from "./images/RunLOGO.png";
 
 function App() {
   const initialValues = {
@@ -51,7 +51,7 @@ function App() {
     <div>
       <div className="login-box">
         <img
-          src={logo}
+          src="RunLOGO.png"
           alt="logo"
           style={{ marginLeft: "120px", height: "80px", marginTop:"20px" }}
         />
