@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import StatusModal from "./components/StatusModal";
+import { PaystackButton } from "react-paystack";
 // import logo from "./images/RunLOGO.png";
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
     matricNo: "",
     yearOfGraduation: "",
     reasonForRequest: "",
+    recipientAddress: "",
     phoneNumber: "",
     email: "",
   };
@@ -38,6 +40,9 @@ function App() {
     matricNo: Yup.string().required("Please enter matric number"),
     yearOfGraduation: Yup.date().required("When did you graduate?"),
     reasonForRequest: Yup.string().required("Why do you need the transcript?"),
+    recipientAddress: Yup.string().required(
+      "Where should we send the transcipt to?"
+    ),
     phoneNumber: Yup.number().required("Phone number is required"),
     email: Yup.string().email().required("Please enter a valid email"),
   });
@@ -47,13 +52,30 @@ function App() {
     onSubmit,
     validationSchema,
   });
+
+  const publicKey = "pk_test_59a499ddc73f5bd10279873270b57e95a7f3dc8f";
+
+  const componentProps = {
+    email: "babatundea15@gmail.com",
+    amount: 500000,
+    metadata: {
+      name: "Babatunde",
+      phone: "08066695472",
+    },
+    publicKey,
+    text: "Pay",
+    onSuccess: () => {
+      formik.handleSubmit();
+    },
+    onClose: () => alert("Wait! You need this oil, don't go!!!!"),
+  };
   return (
     <div>
       <div className="login-box">
         <img
           src="RunLOGO.png"
           alt="logo"
-          style={{ marginLeft: "120px", height: "80px", marginTop:"20px" }}
+          style={{ marginLeft: "120px", height: "80px", marginTop: "20px" }}
         />
         <h2>Transcript Request Form</h2>
         <form onSubmit={formik.handleSubmit}>
@@ -110,6 +132,23 @@ function App() {
           </div>
           <div className="user-box">
             <input
+              placeholder="Address of transcript recipient"
+              type="text"
+              name="recipientAddress"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.recipientAddress}
+            />
+            <label htmlFor="recipientAddress">Recipient's Address</label>
+            {formik.touched.recipientAddress &&
+            formik.errors.recipientAddress ? (
+              <span className="error-message">
+                {formik.errors.recipientAddress}
+              </span>
+            ) : null}
+          </div>
+          <div className="user-box">
+            <input
               placeholder="Phone number"
               type="text"
               name="phoneNumber"
@@ -136,14 +175,8 @@ function App() {
               <span className="error-message">{formik.errors.email}</span>
             ) : null}
           </div>
-          <button type="submit" onClick={formik.handleSubmit}>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            Submit
-          </button>
         </form>
+        <PaystackButton className="paystack-button" {...componentProps} />
       </div>
     </div>
   );
